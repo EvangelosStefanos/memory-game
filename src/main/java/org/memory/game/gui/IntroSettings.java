@@ -294,19 +294,19 @@ public class IntroSettings extends BaseGui {
 
         switch (settings.gt) {
           case 1:
-            NormalGame ng = new NormalGame(settings);
+            new NormalGame(settings);
             break;
           case 2:
-            DoubleGame dg = new DoubleGame(settings);
+            new DoubleGame(settings);
             break;
           case 3:
-            Trio tr = new Trio(settings);
+            new Trio(settings);
             break;
           case 4:
-            Quartet qt = new Quartet(settings);
+            new Quartet(settings);
             break;
           case 5:
-            Duel dl = new Duel(settings);
+            new Duel(settings);
             break;
           default:
             System.out.println("Error in StartGame button.");
