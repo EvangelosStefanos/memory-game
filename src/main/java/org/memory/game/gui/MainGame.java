@@ -10,6 +10,7 @@ import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 
 /**
  * Creates the base window layout and the logic.
+ * 
  * @author EvanStefan
  */
 public abstract class MainGame extends BaseGui {
@@ -27,10 +28,9 @@ public abstract class MainGame extends BaseGui {
   public boolean input;
 
   /**
-   * Κατασκευαστης
-   * Δημιουργει και εμφανιζει το κυριος παραθυρο, το κυριος πανελ και την λογικη
+   * Create a window with a panel and the game mode specific logic.
    * 
-   * @param st Αντικειμενο της Settings με τις επιλογες του χρηστη.
+   * @param settings - The settings defined by the player
    */
   public MainGame(Settings settings) {
 
@@ -82,10 +82,9 @@ public abstract class MainGame extends BaseGui {
   }
 
   /**
-   * Δημιουργει ενα πανελ με jlabels στις οποιες αναγραφεται το σκορ του καθε
-   * παικτη.
+   * Create a panel with labels that display the score for each player.
    * 
-   * @param numofplayers
+   * @param numofplayers - The total number of players
    */
   private void createScores(int numofplayers) {
     GridLayout gl = new GridLayout(1, 0);
@@ -99,9 +98,9 @@ public abstract class MainGame extends BaseGui {
   }
 
   /**
-   * Ενημερωνει το πανελ με τα σκορ των παικτων.
+   * Update the score display for the specified player.
    * 
-   * @param k Η ταυτοτητα του παικτη του οποιυ ειναι η σειρα.
+   * @param k - The identifier of the player whose score display will be updated
    */
   public void updateScores(int k) {
     SwingUtilities.invokeLater(new Runnable() {
@@ -116,8 +115,7 @@ public abstract class MainGame extends BaseGui {
   }
 
   /**
-   * Δημιουργει ενα πανελ στο οποιο αναφραφεται το ονομα του παικτη του οποιου
-   * ειναι η σειρα.
+   * Create a panel that displays the name of the current player
    */
   private synchronized void createTitle() {
     if (p == null) {
@@ -127,10 +125,9 @@ public abstract class MainGame extends BaseGui {
   }
 
   /**
-   * Ενημερωνει το πανελ στο οποιο αναφραφεται το ονομα του παικτη του οποιου
-   * ειναι η σειρα.
+   * Update the panel that displays the name of the current player
    * 
-   * @param k Η ταυτοτητα του παικτη του οποιου ειναι η σειρα.
+   * @param k - The identifier of the current player
    */
   public synchronized void updateTitle(int k) {
     SwingUtilities.invokeLater(new Runnable() {
@@ -149,9 +146,9 @@ public abstract class MainGame extends BaseGui {
   }
 
   /**
-   * Δημιυργει το κουμπι για πασο αν εχει ενεργοποιηθει απο τον χρηστη.
+   * Create a pass button if enabled in the settings
    * 
-   * @param pass Η κατασταση του πασου(True = με πασο, false = χωρις).
+   * @param pass - true if pass is enabled
    */
   private void createPass(boolean pass) {
     if (pass == true) {
@@ -163,12 +160,10 @@ public abstract class MainGame extends BaseGui {
   }
 
   /**
-   * Δημιυργει ενα πανελ στο οποιο αναγραφεται η σειρα με την οποια πρεπει να
-   * ανοιχτουν οι καρτες.
+   * Create a panel with the order that the cards must be matched in.
    * 
-   * @param cardSequence Κατασταση της σειρας ανοιγματος(True = με συγκεκριμενη
-   *                     σειρα, false = χωρις).
-   * @param gametype     Το ειδος του παιχνιδιου.
+   * @param cardSequence - true if cards must be matched in order
+   * @param gametype     - the identifier of the game mode
    */
   private void createCardSequence(boolean cardSequence, int gametype) {
     if (cardSequence == true) {
@@ -181,7 +176,7 @@ public abstract class MainGame extends BaseGui {
           "Absolut Vodka",
           "Cutty Shark", "Famous Grouse", "Jack Daniels", "Malibu" };
       int a = 1;
-      if (gametype == 2) {// Double Game
+      if (gametype == 2) { // Double Game
         a = 2;
       }
       for (int i = 1; i <= 12 * a; i++) {
@@ -191,24 +186,19 @@ public abstract class MainGame extends BaseGui {
   }
 
   /**
-   * Εκτελει την σειρα του καθε ελεγχομενου απ'τον υπολογιστη παικτη και
-   * ενημερωνει σκορ και τιτλο.
+   * For each ai player, execute their turn and update the score and the title.
    * 
-   * @param k Η ταυτοτητα του παικτη του οποιυ ειναι η σειρα.
+   * @param k - The identifier of the current player
    */
   public synchronized void turnOrder(int k) {
 
     if (logic.noreplay == false) {
-
       for (Player p : logic.pa) {
-
         if (logic.map.isEmpty()) {
-
           break;
         }
         do {
           if (logic.map.isEmpty()) {
-
             break;
           }
           updateTitle(p.getID());
@@ -220,9 +210,7 @@ public abstract class MainGame extends BaseGui {
                              // value.
     } else {
       for (Player p : logic.pa) {
-
         if (logic.map.isEmpty()) {
-
           break;
         }
         updateTitle(p.getID());
@@ -236,8 +224,8 @@ public abstract class MainGame extends BaseGui {
   }
 
   /**
-   * Αν υπαρχει εστω και μια καρτα ανοιχτη, την κλεινει και μεταφερει τον
-   * ελεγχο στον επομενο παικτη αλλιως δεν κανει τιποτα.
+   * Close any open cards and if at least one was closed, end current player's
+   * turn and begin next player's turn
    */
   public synchronized void pass() {
     if (logic.openLabels.isEmpty()) {
@@ -261,11 +249,9 @@ public abstract class MainGame extends BaseGui {
   }
 
   /**
-   * Ελεγχει αν υπαρχουν αλλες jlabels στον HashMap hm. Αν δεν υπαρχουν εμφανιζει
-   * το παραθυρο τελους, καταστρεφει το τωρινο παραθυρο και ξαναρχιζει το
-   * παιχνιδι μολις πατησει το ok ο χρηστης.
+   * When the game is over, display the ending window and reset
    * 
-   * @param k Η ταυτοτητα του παικτη του οποιου ειναι η σειρα.
+   * @param k - The identifier of the current player
    */
   public void terminator(int k) {
     SwingUtilities.invokeLater(new Runnable() {
@@ -301,7 +287,6 @@ public abstract class MainGame extends BaseGui {
             default:
               System.out.println("Error in terminator.");
           }
-          IntroSettings is = new IntroSettings();
           f.setVisible(false);
           f.dispose();
         }
@@ -310,20 +295,16 @@ public abstract class MainGame extends BaseGui {
   }
 
   /**
-   * Διαχειριζεται τα κλικς στα jlabels. Ανοιγει την καρτα, αν υπηρχε αλλη
-   * ανοιχτη τις συγκρινει και μεταφερει τον ελεγχο στον επομενο παικτη.
-   * Αν η καρτες που ανοιχτηκαν ηταν οι τελευταιες τερματιζεται το τωρινο
-   * παιχνιδι.
+   * Handles clicks on labels associated with cards. Open the clicked card,
+   * test for a match, test for game end and end the player's turn.
    */
   public class MouseHandler implements MouseListener {
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
     }
 
     @Override
@@ -351,23 +332,20 @@ public abstract class MainGame extends BaseGui {
           }
         };
         t.start();
-
       }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
     }
   }
 
   /**
-   * Καλει την pass().
+   * Handler for the pass button.
    */
   private class PassHandler implements ActionListener {
     @Override
