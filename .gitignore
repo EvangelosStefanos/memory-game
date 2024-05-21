@@ -29,3 +29,5 @@ manifest.mf
 build/*
 dist/*
 nbproject/*
+target/*
+src/main/resources/*
