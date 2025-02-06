@@ -1,10 +1,16 @@
-package org.memory.game.gui;
+package org.memory.game.gamemode;
 
 import org.memory.game.logic.*;
 import org.memory.game.players.Player;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Random;
 import javax.swing.*;
+import org.memory.game.gui.Utils;
+import org.memory.game.gui.IntroGui;
 import static javax.swing.JOptionPane.DEFAULT_OPTION;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 
@@ -13,8 +19,12 @@ import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
  * 
  * @author EvanStefan
  */
-public abstract class MainGame extends BaseGui {
+public abstract class GameModeGui {
 
+  final private int MAX_ROWS;
+  final private int MAX_COLS;
+  final private int MAX_CARDS;
+  
   public JFrame f; // Frame
 
   public JPanel p; // Base Panel
@@ -24,7 +34,7 @@ public abstract class MainGame extends BaseGui {
 
   public JButton b; // Pass
 
-  public Logic logic;
+  public AbstractGameModeLogic logic;
   public boolean input;
 
   /**
@@ -32,54 +42,63 @@ public abstract class MainGame extends BaseGui {
    * 
    * @param settings - The settings defined by the player
    */
-  public MainGame(Settings settings) {
+  public GameModeGui(Settings settings, AbstractGameModeLogic logic) {
+    
+    MAX_ROWS = 5;
+    MAX_COLS = 5;
+    MAX_CARDS = 25;  
+    
+    this.logic = logic;
 
     BorderLayout bl = new BorderLayout();
 
-    f = createFrame("Main Game");
-    p = createPanel(bl);
-    addtoFrame(p, f);
-
-    Thread t5 = new Thread() {
-      @Override
-      public void run() {
-        switch (settings.gt) {
-          case 1:
-            logic = new LogicNormal(settings);
-            break;
-          case 2:
-            logic = new LogicNormal(settings);
-            break;
-          case 3:
-            logic = new LogicTrio(settings);
-            break;
-          case 4:
-            logic = new LogicQuartet(settings);
-            break;
-          case 5:
-            logic = new LogicDuel(settings);
-            break;
-          default:
-            System.out.println("Error in logic.");
-        }
-      }
-    };
-    t5.start();
-    try {
-      t5.join();
-    } catch (Exception e) {
-
-    }
+    f = Utils.createFrame("Main Game");
+    p = Utils.createPanel(bl);
+    Utils.addtoFrame(p, f);
 
     createScores(settings.playerN);
     createTitle();
     createPass(settings.pass);
     createCardSequence(settings.cos, settings.gt);
+    createCards();
 
     input = true;
     f.pack();
-    update(f);
+    Utils.update(f);
   }
+  
+  private void createCards() {
+
+    GridLayout gl = new GridLayout(MAX_ROWS, MAX_COLS);
+    p3 = new JPanel(gl);
+    p.add(p3, BorderLayout.CENTER);
+
+    logic.map = new HashMap<>();
+    ArrayList<JLabel> labels = new ArrayList<>(MAX_CARDS);
+    ArrayList<Card> cards = new ArrayList<>(MAX_CARDS);
+    MouseHandler mh = new MouseHandler();
+
+    // Create cards
+    for (int i = 0; i < MAX_CARDS; i++) {
+      Card card = new Card(i, i);
+      JLabel label = new JLabel(card.getCardBackImageIcon());
+      label.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3, true));
+      label.addMouseListener(mh);
+      logic.map.put(label, card);
+      cards.add(card);
+      labels.add(label);
+    }
+    
+    Collections.shuffle(labels);
+
+    // Add cards on the panel
+    for (int i = 0; i < MAX_CARDS; i++) {
+      p3.add(labels.get(i));
+    }
+    f.pack();
+    Utils.update(f);
+  }
+
 
   /**
    * Create a panel with labels that display the score for each player.
@@ -88,7 +107,7 @@ public abstract class MainGame extends BaseGui {
    */
   private void createScores(int numofplayers) {
     GridLayout gl = new GridLayout(1, 0);
-    p1 = createPanel(gl);
+    p1 = Utils.createPanel(gl);
     p.add(p1, BorderLayout.SOUTH);
 
     for (int i = 0; i <= numofplayers; i++) {
@@ -168,7 +187,7 @@ public abstract class MainGame extends BaseGui {
   private void createCardSequence(boolean cardSequence, int gametype) {
     if (cardSequence == true) {
       GridLayout gl = new GridLayout(0, 1);
-      p2 = createPanel(gl);
+      p2 = Utils.createPanel(gl);
       p.add(p2, BorderLayout.EAST);
       String[] s = { "Βίκος", "Αύρα", "Nestea", "Amita Motion", "Λούξ", "Λεμονίτα", "Πορτοκαλάδα", "Sprite", "Pepsi",
           "Coca Cola",
@@ -287,6 +306,7 @@ public abstract class MainGame extends BaseGui {
             default:
               System.out.println("Error in terminator.");
           }
+          new IntroGui();
           f.setVisible(false);
           f.dispose();
         }
@@ -317,17 +337,18 @@ public abstract class MainGame extends BaseGui {
           @Override
           public void run() {
             logic.openSesami(l);
-            if (logic.openLabels.size() == logic.limit) {
-              input = false;
-              logic.saveAll();
-              logic.compareCards(0, logic.openLabels);
-              updateScores(0);
-              terminator(0);
-              if (!logic.noreplay) {
-                turnOrder(1);
-              } else {
-                input = true;
-              }
+            if (logic.openLabels.size() != logic.limit) {
+              return;
+            }
+            input = false;
+            logic.saveAll();
+            logic.compareCards(0, logic.openLabels);
+            updateScores(0);
+            terminator(0);
+            if (!logic.noreplay) {
+              turnOrder(1);
+            } else {
+              input = true;
             }
           }
         };

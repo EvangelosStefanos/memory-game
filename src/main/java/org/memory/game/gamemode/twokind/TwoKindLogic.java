@@ -1,8 +1,11 @@
-package org.memory.game.logic;
+package org.memory.game.gamemode.twokind;
 
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
+import org.memory.game.logic.Card;
+import org.memory.game.gamemode.AbstractGameModeLogic;
+import org.memory.game.logic.Settings;
 
 /**
  * Λογικη απλου παιχνιδιου. Οριζει τους κανονες και τον τροπο παιχνιδιου του
@@ -10,14 +13,18 @@ import javax.swing.SwingUtilities;
  * 
  * @author Steve
  */
-public class LogicNormal extends Logic {
+public class TwoKindLogic extends AbstractGameModeLogic {
 
+  final int MAX_ROWS = 4;
+  final int MAX_COLS = 6;
+  final int MAX_CARDS = this.MAX_ROWS * this.MAX_COLS;
+  
   /**
    * Κατασκευαστης
    * 
    * @param st Αντικειμενο με τις επιλογες του χρηστη
    */
-  public LogicNormal(Settings settings) {
+  public TwoKindLogic(Settings settings) {
     super(settings);
   }
 
@@ -52,7 +59,7 @@ public class LogicNormal extends Logic {
         unequallity(l1, l2, x, y);
       }
     } else {
-      if (x.equals(y) && openSeq == x.getSequence()) {
+      if (x.equals(y) && openSeq == x.getOrder()) {
         equallity(k, l1, l2, x, y);
       } else {
         unequallity(l1, l2, x, y);

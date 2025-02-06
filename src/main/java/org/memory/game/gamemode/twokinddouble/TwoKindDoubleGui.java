@@ -1,42 +1,35 @@
-package org.memory.game.gui;
+package org.memory.game.gamemode.twokinddouble;
 
+import org.memory.game.gamemode.AbstractGameModeGui;
 import java.awt.*;
 import java.util.*;
 import javax.swing.*;
+import org.memory.game.gamemode.AbstractGameModeLogic;
 import org.memory.game.logic.Settings;
-import org.memory.game.logic.LogicNormal;
+import org.memory.game.gamemode.twokind.TwoKindLogic;
+import org.memory.game.gui.Utils;
 import org.memory.game.logic.Card;
 
 /**
- * A Game mode where the number of cards to match is doubled.
+ * The graphical user interface for the Double game mode. The deck size is
+ * 48 cards placed in a 6 x 8 grid. Logic is the same as Twos game mode.
  * 
  * @author EvanStefan
  */
-public class DoubleGame extends MainGame {
+public class TwoKindDoubleGui extends AbstractGameModeGui {
 
-  private LogicNormal logic;
+  private TwoKindLogic logic;
 
   /**
-   * Create the DoubleGame game mode
+   * Create the Double game mode
    * 
    * @param settings - The settings that the user selected
    */
-  public DoubleGame(Settings settings) {
-    super(settings);
-    this.logic = (LogicNormal) super.logic;
-
-    Thread t = new Thread() {
-
-      @Override
-      public void run() {
-        LogicNormal logic = new LogicNormal(settings);
-      }
-    };
-    t.start();
-
+  public TwoKindDoubleGui(Settings settings, TwoKindLogic logic) {
+    super(settings, logic);
     createCards();
   }
-
+  
   /**
    * Create a panel that contains 48 cards in a 6 x 8 grid.
    */
@@ -56,7 +49,7 @@ public class DoubleGame extends MainGame {
     for (int k = 0; k <= 1; k++) {
       for (int i = 0; i <= 23; i++) {
         ca[j] = new Card(i, i);
-        la[j] = new JLabel(ca[i].getCardBack());
+        la[j] = new JLabel(ca[i].getCardBackImageIcon());
         la[j].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3, true));
         la[j].addMouseListener(mh);
         logic.map.put(la[j], ca[j]);
@@ -78,6 +71,7 @@ public class DoubleGame extends MainGame {
       p3.add(la[i]);
     }
     f.pack();
-    update(f);
+    Utils.update(f);
   }
+
 }

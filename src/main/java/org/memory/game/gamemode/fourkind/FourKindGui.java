@@ -1,27 +1,31 @@
-package org.memory.game.gui;
+package org.memory.game.gamemode.fourkind;
 
+import org.memory.game.gamemode.AbstractGameModeGui;
 import java.awt.*;
 import java.util.*;
 import javax.swing.*;
+import org.memory.game.gamemode.AbstractGameModeLogic;
+import org.memory.game.gui.Utils;
 import org.memory.game.logic.Settings;
+import org.memory.game.logic.Card;
 
 /**
  * Αντιπροσωπευει το κουαρτετο.
  * 
  * @author Steve
  */
-public class Quartet extends MainGame {
+public class FourKindGui extends AbstractGameModeGui {
 
-  private LogicQuartet logic;
+  private FourKindLogic logic;
 
   /**
    * Κατασκευαστης
    * 
-   * @param st Αντικειμενο με τις επιλογες του χρηστη
+   * @param settings Αντικειμενο με τις επιλογες του χρηστη
    */
-  public Quartet(Settings settings) {
-    super(settings);
-    this.logic = (LogicQuartet) super.logic;
+  public FourKindGui(Settings settings, FourKindLogic logic) {
+    super(settings, logic);
+    this.logic = (FourKindLogic) super.logic;
 
     createCards();
   }
@@ -40,17 +44,17 @@ public class Quartet extends MainGame {
     JLabel la[] = new JLabel[48];
     int j = 0;// Array index
     Card ca[] = new Card[48];
-    MainGame.MouseHandler mh = new MainGame.MouseHandler();
+    AbstractGameModeGui.MouseHandler mh = new AbstractGameModeGui.MouseHandler();
 
     // Create cards
     for (int k = 0; k <= 3; k++) {
       for (int i = 0; i <= 11; i++) {
 
-        ca[j] = new Card("images/" + i + ".jpg", i);
-        la[j] = new JLabel(ca[i].getBg());
+        ca[j] = new Card(i, i);
+        la[j] = new JLabel(ca[i].getCardBackImageIcon());
         la[j].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3, true));
         la[j].addMouseListener(mh);
-        logic.hm.put(la[j], ca[j]);
+        logic.map.put(la[j], ca[j]);
         j++;
       }
     }
@@ -69,7 +73,7 @@ public class Quartet extends MainGame {
       p3.add(la[i]);
     }
     f.pack();
-    update(f);
+    Utils.update(f);
   }
 
 }

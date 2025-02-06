@@ -4,6 +4,7 @@ import org.memory.game.players.AiPlayer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JLabel;
+import org.memory.game.logic.Card;
 
 /**
  * Αντιπροσωπευει τον παικτη που θυμαται μονο τα μισα.

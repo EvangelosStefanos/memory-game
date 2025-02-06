@@ -1,24 +1,28 @@
-package org.memory.game.logic;
+package org.memory.game.gamemode.fourkind;
 
+import org.memory.game.gamemode.AbstractGameModeLogic;
 import org.memory.game.players.AiPlayer;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
+import org.memory.game.logic.Card;
+import org.memory.game.logic.Settings;
 
 /**
- * Λογικη τριου. Οριζει τους κανονες και τον τροπο παιχνιδιου του τριου.
+ * Λογικη κουαρτετου. Οριζει τους κανονες και τον τροπο παιχνιδιου του
+ * κουαρτετου.
  * 
  * @author Steve
  */
-public class LogicTrio extends Logic {
+public class FourKindLogic extends AbstractGameModeLogic {
 
   /**
    * Κατασκευαστης
    * 
    * @param st Αντικειμενο με τις επιλογες του χρηστη
    */
-  public LogicTrio(Settings settings) {
+  public FourKindLogic(Settings settings) {
     super(settings);
   }
 
@@ -49,7 +53,6 @@ public class LogicTrio extends Logic {
     while (openLabels.contains(l1)) {
       l1 = list.get(rng.nextInt(list.size()));
     }
-    // System.out.println("Handle 1");
     openSesami(l1);
 
     ArrayList<JLabel> rall = aip.rememberAll(l1, map, limit);
@@ -86,9 +89,11 @@ public class LogicTrio extends Logic {
     JLabel l1 = ol.get(0);
     JLabel l2 = ol.get(1);
     JLabel l3 = ol.get(2);
+    JLabel l4 = ol.get(3);
     Card x = map.get(l1);
     Card y = map.get(l2);
     Card z = map.get(l3);
+    Card m = map.get(l4);
 
     try {
       System.out.println("Now Sleeping");
@@ -97,14 +102,14 @@ public class LogicTrio extends Logic {
 
     }
     if (!cos) {
-      if (x.equals(y) && x.equals(z)) {
-        equallity(k, l1, l2, l3, x, y, z);
+      if (x.equals(y) && x.equals(z) && x.equals(m)) {
+        equallity(k, l1, l2, l3, l4, x, y, z, m);
       } else {
         unequallity();
       }
     } else {
-      if (x.equals(y) && x.equals(z) && openSeq == x.getSequence()) {
-        equallity(k, l1, l2, l3, x, y, z);
+      if (x.equals(y) && x.equals(z) && x.equals(m) && openSeq == x.getOrder()) {
+        equallity(k, l1, l2, l3, l4, x, y, z, m);
       } else {
         unequallity();
       }
@@ -115,6 +120,7 @@ public class LogicTrio extends Logic {
         x.closeCard(l1);
         y.closeCard(l2);
         z.closeCard(l3);
+        m.closeCard(l4);
       }
     });
     ol.clear();
@@ -129,27 +135,31 @@ public class LogicTrio extends Logic {
    * @param l1 JLabel της πρωτης καρτας
    * @param l2 JLabel της δευτερης καρτας
    * @param l3 JLabel της τριτης καρτας
+   * @param l4 JLabel της τεταρτης καρτας
    * @param x  Η πρωτη καρτα
    * @param y  Η δευτερη καρτα
    * @param z  Η τριτη καρτα
+   * @param m  Η τεταρτη καρτα
    */
-  private void equallity(int k, JLabel l1, JLabel l2, JLabel l3, Card x, Card y, Card z) {
-    System.out.println("Congratulations " + pa[k].getName() + " found a trio!");
+  private void equallity(int k, JLabel l1, JLabel l2, JLabel l3, JLabel l4, Card x, Card y, Card z, Card m) {
+    System.out.println("Congratulations " + pa[k].getName() + " found a four match!");
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
         l1.setEnabled(false);
         l2.setEnabled(false);
         l3.setEnabled(false);
+        l4.setEnabled(false);
       }
     });
     openSeq = openSeq + 1;
     noreplay = true;// Player will play again
-    scores[k] = scores[k] + 3;
+    scores[k] = scores[k] + 4;
     forgetAll();
     map.remove(l1, x);
     map.remove(l2, y);
     map.remove(l3, z);
+    map.remove(l4, m);
   }
 
   /**

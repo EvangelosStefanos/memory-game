@@ -3,16 +3,17 @@ package org.memory.game.gui;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import org.memory.game.gamemode.GameModeLogicFactory;
 import org.memory.game.logic.Settings;
 
 /**
  * Displays the settings the player must set at the start of a new game.
  * @author EvanStefan
  */
-public class IntroSettings extends BaseGui {
+public class IntroGui {
 
   private JFrame f;
-  // Intro
+  // IntroGui
   private JPanel p;
   private JPanel p1;
 
@@ -49,16 +50,16 @@ public class IntroSettings extends BaseGui {
    * the settings the players needs to set and is displayed after the player
    * presses the New Game button.
    */
-  public IntroSettings() {
+  public IntroGui() {
 
     settings = new Settings();
     ButtonHandler h = new ButtonHandler();
 
-    f = createFrame("Intro", 450, 450);
+    f = Utils.createFrame("Intro", 450, 450);
     p1 = createIntro(h);
     p2 = createSettings(h);
 
-    update(f);
+    Utils.update(f);
   }
 
   /**
@@ -71,26 +72,26 @@ public class IntroSettings extends BaseGui {
     GridLayout gl = new GridLayout(5, 3);
     BorderLayout bl = new BorderLayout();
 
-    p = createPanel(gl);
-    p1 = createPanel(bl);
+    p = Utils.createPanel(gl);
+    p1 = Utils.createPanel(bl);
 
-    addtoPanel(new JLabel("Start a new game :", JLabel.CENTER), p);
+    Utils.addtoPanel(new JLabel("Start a new game :", JLabel.CENTER), p);
 
-    b1 = createButton("New Game", h);
-    addtoPanel(b1, p);
+    b1 = Utils.createButton("New Game", h);
+    Utils.addtoPanel(b1, p);
 
-    addtoPanel(new JLabel("Close Application :", JLabel.CENTER), p);
+    Utils.addtoPanel(new JLabel("Close Application :", JLabel.CENTER), p);
 
-    b2 = createButton("Exit", h);
-    addtoPanel(b2, p);
+    b2 = Utils.createButton("Exit", h);
+    Utils.addtoPanel(b2, p);
 
-    addtoPanel(new JLabel(), p);
+    Utils.addtoPanel(new JLabel(), p);
 
     p1.add(p, BorderLayout.CENTER);
     p1.add(new JLabel("             "), BorderLayout.EAST);
     p1.add(new JLabel("             "), BorderLayout.WEST);
 
-    addtoFrame(p1, f);
+    Utils.addtoFrame(p1, f);
 
     return p1;
   }
@@ -104,7 +105,7 @@ public class IntroSettings extends BaseGui {
     // 2nd Window
 
     // Set Layout
-    p2 = createPanel(new GridBagLayout());
+    p2 = Utils.createPanel(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
 
     gbc.weighty = 0.1;
@@ -182,27 +183,27 @@ public class IntroSettings extends BaseGui {
 
     gbc.gridx = 1;
     gbc.gridy = 0;
-    cbxgm = createBox(gm, c);
+    cbxgm = Utils.createBox(gm, c);
     p2.add(cbxgm, gbc);
 
     gbc.gridx = 1;
     gbc.gridy = 1;
-    cbxplayerN = createBox(playerN, c);
+    cbxplayerN = Utils.createBox(playerN, c);
     p2.add(cbxplayerN, gbc);
 
     gbc.gridx = 1;
     gbc.gridy = 2;
-    cbxdif2 = createBox(dif, c);
+    cbxdif2 = Utils.createBox(dif, c);
     p2.add(cbxdif2, gbc);
 
     gbc.gridx = 1;
     gbc.gridy = 3;
-    cbxdif3 = createBox(dif, c);
+    cbxdif3 = Utils.createBox(dif, c);
     p2.add(cbxdif3, gbc);
 
     gbc.gridx = 1;
     gbc.gridy = 4;
-    cbxdif4 = createBox(dif, c);
+    cbxdif4 = Utils.createBox(dif, c);
     p2.add(cbxdif4, gbc);
 
     // Set RadioButtons Right
@@ -210,26 +211,26 @@ public class IntroSettings extends BaseGui {
 
     gbc.gridx = 1;
     gbc.gridy = 6;
-    rbNrml = new JRadioButton("Normal Game");
+    rbNrml = new JRadioButton("Twos");
     rbNrml.addActionListener(rh);
     rbNrml.setSelected(true);
     p2.add(rbNrml, gbc);
 
     gbc.gridx = 1;
     gbc.gridy = 7;
-    rbDbl = new JRadioButton("Double Game");
+    rbDbl = new JRadioButton("Double");
     rbDbl.addActionListener(rh);
     p2.add(rbDbl, gbc);
 
     gbc.gridx = 1;
     gbc.gridy = 8;
-    rbTr = new JRadioButton("Trio");
+    rbTr = new JRadioButton("Threes");
     rbTr.addActionListener(rh);
     p2.add(rbTr, gbc);
 
     gbc.gridx = 1;
     gbc.gridy = 9;
-    rbQrt = new JRadioButton("Quartet");
+    rbQrt = new JRadioButton("Fours");
     rbQrt.addActionListener(rh);
     p2.add(rbQrt, gbc);
 
@@ -251,7 +252,7 @@ public class IntroSettings extends BaseGui {
     // StartGame Button
     gbc.gridx = 1;
     gbc.gridy = 11;
-    sg = createButton("Start Game", h);
+    sg = Utils.createButton("Start Game", h);
     p2.add(sg, gbc);
 
     // Initialize Settings Panel
@@ -272,7 +273,7 @@ public class IntroSettings extends BaseGui {
       if (e.getSource() == b1) { // new game button
         f.remove(p1);
         f.add(p2);
-        update(f);
+        Utils.update(f);
       }
       else if (e.getSource() == b2) { // exit button
         System.exit(0);
@@ -291,27 +292,13 @@ public class IntroSettings extends BaseGui {
         if (!chbCOS.isEnabled()) {
           settings.csp = false;
         }
-
-        switch (settings.gt) {
-          case 1:
-            new NormalGame(settings);
-            break;
-          case 2:
-            new DoubleGame(settings);
-            break;
-          case 3:
-            new Trio(settings);
-            break;
-          case 4:
-            new Quartet(settings);
-            break;
-          case 5:
-            new Duel(settings);
-            break;
-          default:
-            System.out.println("Error in StartGame button.");
-            break;
-        }
+        
+        /* TODO FIX
+        GameModeGuiFactory.createGameModeGui(
+          settings,
+          GameModeLogicFactory.createGameModeLogic(settings)
+        );
+        */
 
         f.setVisible(false);
         f.dispose();

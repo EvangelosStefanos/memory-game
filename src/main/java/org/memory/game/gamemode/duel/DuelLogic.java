@@ -1,5 +1,6 @@
-package org.memory.game.logic;
+package org.memory.game.gamemode.duel;
 
+import org.memory.game.gamemode.AbstractGameModeLogic;
 import org.memory.game.players.AiPlayer;
 import org.memory.game.players.Player;
 import java.util.ArrayList;
@@ -7,6 +8,8 @@ import java.util.HashMap;
 import java.util.Random;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
+import org.memory.game.logic.Card;
+import org.memory.game.logic.Settings;
 
 /**
  * Λογικη μονομαχιας. Οριζει τους κανονες και τον τροπο παιχνιδιου της
@@ -14,7 +17,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author Steve
  */
-public class LogicDuel extends Logic {
+public class DuelLogic extends AbstractGameModeLogic {
 
   public HashMap<JLabel, Card> hmp;
   public HashMap<JLabel, Card> hmo;
@@ -24,7 +27,7 @@ public class LogicDuel extends Logic {
    * 
    * @param settings Αντικειμενο με τις επιλογες του χρηστη
    */
-  public LogicDuel(Settings settings) {
+  public DuelLogic(Settings settings) {
     super(settings);
     hmp = new HashMap<>();
     hmo = new HashMap<>();
@@ -142,7 +145,7 @@ public class LogicDuel extends Logic {
         unequallity();
       }
     } else {
-      if (x.equals(y) && openSeq == x.getSequence()) {
+      if (x.equals(y) && openSeq == x.getOrder()) {
         equallity(k, l1, l2, x, y);
       } else {
         unequallity();

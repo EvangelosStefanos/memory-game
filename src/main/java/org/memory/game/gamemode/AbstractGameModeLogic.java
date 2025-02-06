@@ -1,4 +1,4 @@
-package org.memory.game.logic;
+package org.memory.game.gamemode;
 
 import org.memory.game.players.*;
 import java.util.ArrayList;
@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Random;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
+import org.memory.game.logic.Card;
+import org.memory.game.logic.Settings;
 
 /**
  * Abstract κλαση που κληροδοτει κωδικα. Δημιουργει τους παικτες και οριζει τι
@@ -13,7 +15,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author Steve
  */
-public abstract class Logic {
+public abstract class AbstractGameModeLogic {
 
   public Player pa[]; // Πινακας με ολους τους παικτες
   public int scores[]; // Πινακας με το σκορ των παικτων
@@ -34,7 +36,7 @@ public abstract class Logic {
    * 
    * @param st Αντικειμενο με τις επιλογες του χρηστη
    */
-  public Logic(Settings settings) {
+  public AbstractGameModeLogic(Settings settings) {
     createPlayers(settings);
 
     map = new HashMap<>();

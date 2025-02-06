@@ -1,29 +1,32 @@
-package org.memory.game.gui;
+package org.memory.game.gamemode.twokind;
 
 import org.memory.game.logic.Settings;
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import static javax.swing.JOptionPane.*;
+import org.memory.game.gamemode.AbstractGameModeGui;
+import org.memory.game.gamemode.AbstractGameModeLogic;
+import org.memory.game.gui.Utils;
+import org.memory.game.logic.Card;
 
 /**
- * Αντιπροσωπευει το απλο παιχνιδι.
+ * A game mode where there is a deck of cards that players must open and match.
+ * There are 24 cards in a 4 x 6 grid and each player can open 2 cards per turn.
  * 
- * @author Steve
+ * @author EvanStefan
  */
-public class NormalGame extends MainGame {
+public class TwoKindGui extends AbstractGameModeGui {
 
-  private LogicNormal logic;
+  private TwoKindLogic logic;
 
   /**
    * Κατασκευαστης
    * 
    * @param settings Αντικειμενο με τις επιλογες του χρηστη
    */
-  public NormalGame(Settings settings) {
-    super(settings);
-    this.logic = (LogicNormal) super.logic;
+  public TwoKindGui(Settings settings, TwoKindLogic logic) {
+    super(settings, logic);
+    this.logic = (TwoKindLogic) super.logic;
 
     createCards();
   }
@@ -39,7 +42,7 @@ public class NormalGame extends MainGame {
     p3 = new JPanel(gl);
     p.add(p3, BorderLayout.CENTER);
 
-    logic.hm = new HashMap<>();
+    logic.map = new HashMap<>();
     JLabel la[] = new JLabel[24];
     int j = 0;// Array index
     Card ca[] = new Card[24];
@@ -49,11 +52,11 @@ public class NormalGame extends MainGame {
     for (int k = 0; k <= 1; k++) {
       for (int i = 0; i <= 11; i++) {
 
-        ca[j] = new Card("images/" + i + ".jpg", i);
-        la[j] = new JLabel(ca[i].getBg());
+        ca[j] = new Card(i, i);
+        la[j] = new JLabel(ca[i].getCardBackImageIcon());
         la[j].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3, true));
         la[j].addMouseListener(mh);
-        logic.hm.put(la[j], ca[j]);
+        logic.map.put(la[j], ca[j]);
         j++;
       }
     }
@@ -72,6 +75,6 @@ public class NormalGame extends MainGame {
       p3.add(la[i]);
     }
     f.pack();
-    update(f);
+    Utils.update(f);
   }
 }

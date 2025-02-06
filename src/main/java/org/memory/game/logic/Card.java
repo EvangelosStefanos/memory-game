@@ -1,7 +1,7 @@
 package org.memory.game.logic;
 
-import javax.swing.*;
-import java.net.URL;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 /**
  * This class represents a card to be matched.
@@ -9,10 +9,11 @@ import java.net.URL;
  * @author Steve
  */
 public class Card {
-  private String name;
+  private String cardFrontPath;
+  private String cardBackPath;
+  private ImageIcon cardFrontImageIcon;
+  private ImageIcon cardBackImageIcon;
   private int order; // The order that defines the sequence that each card must be matched in
-  private ImageIcon cardFront;
-  private ImageIcon cardBack;
 
   /**
    * Construct a card.
@@ -21,26 +22,13 @@ public class Card {
    * @param order - The order of the card in the sequence
    */
   public Card(int id, int order) {
-    this.name = Constants.getCardFrontPath(id);
+    this.cardFrontPath = Constants.getCardFrontPath(id);
+    this.cardBackPath = Constants.getCardBackPath();
+    this.cardFrontImageIcon = Constants.createImageIcon(this.cardFrontPath);
+    this.cardBackImageIcon = Constants.createImageIcon(this.cardBackPath);
     this.order = order;
-    this.cardFront = this.getImage(this.name);
-    this.cardBack = this.getImage(Constants.getCardBackPath());
   }
 
-  /**
-   * Return the image with the specified name.
-   * 
-   * @param name - The name of the image to return
-   * @return ImageIcon - The image with the specified name
-   */
-  private ImageIcon getImage(String name) {
-    ImageIcon image = null;
-    URL imageUrl = this.getClass().getResource(name);
-    if (imageUrl != null) {
-      image = new ImageIcon(imageUrl);
-    }
-    return image;
-  }
 
   /**
    * Get the order in the sequence that this card must be matched in
@@ -56,8 +44,8 @@ public class Card {
    * 
    * @return ImageIcon - The image used as this card's back
    */
-  public ImageIcon getCardBack() {
-    return cardBack;
+  public ImageIcon getCardBackImageIcon() {
+    return cardBackImageIcon;
   }
 
   /**
@@ -66,7 +54,7 @@ public class Card {
    * @param label - A Jlabel that will be set to display the card's front
    */
   public void openCard(JLabel label) {
-    label.setIcon(cardFront);
+    label.setIcon(cardFrontImageIcon);
   }
 
   /**
@@ -75,7 +63,7 @@ public class Card {
    * @param label - A Jlabel that will be set to display the card's back
    */
   public void closeCard(JLabel label) {
-    label.setIcon(cardBack);
+    label.setIcon(cardBackImageIcon);
   }
 
   /**
@@ -93,7 +81,7 @@ public class Card {
       return false;
 
     Card c = (Card) o;
-    return name.equals(c.name) && order == c.getOrder();
+    return cardFrontPath.equals(c.cardFrontPath) && order == c.getOrder();
   }
 
   /**
@@ -105,7 +93,7 @@ public class Card {
   public int hashCode() {
     int hash = 4;
     hash = 4 * hash + order;
-    hash = 4 * hash + name.hashCode();
+    hash = 4 * hash + cardFrontPath.hashCode();
     return hash;
   }
 }

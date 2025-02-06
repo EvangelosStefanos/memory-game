@@ -1,0 +1,453 @@
+package org.memory.game.gui;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import org.memory.game.gamemode.GameModeLogicFactory;
+import org.memory.game.logic.Settings;
+
+/**
+ * Displays the settings the player must set at the start of a new game.
+ * @author EvanStefan
+ */
+public class SettingsPanel extends JPanel {
+
+  // Settings
+  private JPanel p2;
+
+  private JComboBox cbxgm;
+  private JComboBox cbxplayerN;
+  private JComboBox cbxdif2;
+  private JComboBox cbxdif3;
+  private JComboBox cbxdif4;
+
+  private JCheckBox chbP;
+  private JCheckBox chbNR;
+  private JCheckBox chbCOS;
+  private JCheckBox chbCSP;
+
+  private JRadioButton rbNrml;
+  private JRadioButton rbDbl;
+  private JRadioButton rbTr;
+  private JRadioButton rbQrt;
+  private JRadioButton rbDuel;
+
+  private JButton sg;
+
+  Settings settings;
+
+  /**
+   * Creates and displays a window and two panels. The first contains the
+   * New Game and Exit buttons and is displayed initially. The second contains
+   * the settings the players needs to set and is displayed after the player
+   * presses the New Game button.
+   */
+  public SettingsPanel() { }
+
+  /**
+   * Create and return the settings panel.
+   * @param h - The listener added to the buttons
+   * @return JPanel - The panel with the settings
+   */
+  private JPanel createSettings(ActionListener h) {
+    // 2nd Window
+
+    // Set Layout
+    p2 = Utils.createPanel(new GridBagLayout());
+    GridBagConstraints gbc = new GridBagConstraints();
+
+    gbc.weighty = 0.1;
+    gbc.weightx = 0.5;
+
+    // Set Labels Left
+
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.insets = new Insets(0, 40, 0, 0);
+
+    int y = 0;
+
+    gbc.gridx = 0;
+    gbc.gridy = y++;
+    p2.add(new JLabel("Select Gamemode :"), gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    p2.add(new JLabel("Select number of players :"), gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 2;
+    p2.add(new JLabel("Player 2 difficulty :"), gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 3;
+    p2.add(new JLabel("Player 3 difficulty :"), gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 4;
+    p2.add(new JLabel("Player 4 difficulty :"), gbc);
+
+    // Separator
+
+    gbc.insets = new Insets(20, 40, 20, 40);
+    gbc.gridwidth = 2;
+    gbc.gridx = 0;
+    gbc.gridy = 5;
+    p2.add(new JLabel("Select Features :"), gbc);
+    gbc.gridwidth = 1;
+    gbc.insets = new Insets(0, 40, 0, 0);
+
+    // Set CheckBoxes Left
+    CheckBoxHandler ch = new CheckBoxHandler();
+
+    gbc.gridx = 0;
+    gbc.gridy = 6;
+    chbP = new JCheckBox("Pass");
+    chbP.addItemListener(ch);
+    p2.add(chbP, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 7;
+    chbNR = new JCheckBox("No Replay");
+    chbNR.addItemListener(ch);
+    p2.add(chbNR, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 8;
+    chbCOS = new JCheckBox("Card Opening Sequence");
+    chbCOS.addItemListener(ch);
+    p2.add(chbCOS, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 9;
+    chbCSP = new JCheckBox("Card Switch Position");
+    chbCSP.addItemListener(ch);
+    p2.add(chbCSP, gbc);
+
+    // Set ComboBoxes Right
+    ComboBoxHandler c = new ComboBoxHandler();
+    String[] gm = { "Singleplayer", "Multiplayer" };
+    String[] playerN = { "2", "3", "4" };
+    String[] dif = { "Easy", "Normal", "Hard" };
+
+    gbc.insets = new Insets(0, 0, 0, 40);
+
+    gbc.gridx = 1;
+    gbc.gridy = 0;
+    cbxgm = Utils.createBox(gm, c);
+    p2.add(cbxgm, gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 1;
+    cbxplayerN = Utils.createBox(playerN, c);
+    p2.add(cbxplayerN, gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 2;
+    cbxdif2 = Utils.createBox(dif, c);
+    p2.add(cbxdif2, gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 3;
+    cbxdif3 = Utils.createBox(dif, c);
+    p2.add(cbxdif3, gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 4;
+    cbxdif4 = Utils.createBox(dif, c);
+    p2.add(cbxdif4, gbc);
+
+    // Set RadioButtons Right
+    RadioHandler rh = new RadioHandler();
+
+    gbc.gridx = 1;
+    gbc.gridy = 6;
+    rbNrml = new JRadioButton("Twos");
+    rbNrml.addActionListener(rh);
+    rbNrml.setSelected(true);
+    p2.add(rbNrml, gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 7;
+    rbDbl = new JRadioButton("Double");
+    rbDbl.addActionListener(rh);
+    p2.add(rbDbl, gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 8;
+    rbTr = new JRadioButton("Threes");
+    rbTr.addActionListener(rh);
+    p2.add(rbTr, gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 9;
+    rbQrt = new JRadioButton("Fours");
+    rbQrt.addActionListener(rh);
+    p2.add(rbQrt, gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 10;
+    rbDuel = new JRadioButton("Duel");
+    rbDuel.addActionListener(rh);
+    p2.add(rbDuel, gbc);
+
+    // Add to ButtonGroup
+    ButtonGroup bg = new ButtonGroup();
+
+    bg.add(rbNrml);
+    bg.add(rbDbl);
+    bg.add(rbTr);
+    bg.add(rbQrt);
+    bg.add(rbDuel);
+
+    // StartGame Button
+    gbc.gridx = 1;
+    gbc.gridy = 11;
+    sg = Utils.createButton("Start Game", h);
+    p2.add(sg, gbc);
+
+    // Initialize Settings Panel
+    cbxgm.setSelectedIndex(0);
+
+    return p2;
+  }
+
+  /**
+   * Button handler. New Game button displays the settings panel, Exit button
+   * exits and Start Game button starts a game with the current settings.
+   */
+  private class ButtonHandler implements ActionListener {
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+      if (e.getSource() == b1) { // new game button
+        f.remove(p1);
+        f.add(p2);
+        Utils.update(f);
+      }
+      else if (e.getSource() == b2) { // exit button
+        System.exit(0);
+      }
+      else if (e.getSource() == sg) { // start game button
+
+        if (!chbP.isEnabled()) {
+          settings.pass = false;
+        }
+        if (!chbNR.isEnabled()) {
+          settings.nr = false;
+        }
+        if (!chbCSP.isEnabled()) {
+          settings.csp = false;
+        }
+        if (!chbCOS.isEnabled()) {
+          settings.csp = false;
+        }
+        
+        /* TODO FIX
+        GameModeGuiFactory.createGameModeGui(
+          settings,
+          GameModeLogicFactory.createGameModeLogic(settings)
+        );
+        */
+
+        f.setVisible(false);
+        f.dispose();
+      }
+    }
+  }
+
+  /**
+   * RadioButton handler for the settings panel. Activates / Deactivates
+   * components based on compatibility rules.
+   */
+  private class RadioHandler implements ActionListener {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (e.getSource() == rbNrml) {
+        settings.gt = 1;
+        chbP.setEnabled(true);
+        chbNR.setEnabled(true);
+        chbCSP.setEnabled(true);
+        chbCOS.setEnabled(true);
+      } else if (e.getSource() == rbDbl) {
+        settings.gt = 2;
+        chbP.setEnabled(true);
+        chbNR.setEnabled(true);
+        chbCSP.setEnabled(true);
+        chbCOS.setEnabled(true);
+      } else if (e.getSource() == rbTr) {
+        settings.gt = 3;
+        chbP.setEnabled(true);
+        chbNR.setEnabled(true);
+        chbCSP.setEnabled(false);
+        chbCOS.setEnabled(true);
+      } else if (e.getSource() == rbQrt) {
+        settings.gt = 4;
+        chbP.setEnabled(true);
+        chbNR.setEnabled(true);
+        chbCSP.setEnabled(false);
+        chbCOS.setEnabled(true);
+      } else if (e.getSource() == rbDuel) {
+        settings.gt = 5;
+        chbP.setEnabled(false);
+        chbNR.setEnabled(false);
+        chbCSP.setEnabled(false);
+        chbCOS.setEnabled(true);
+      }
+    }
+  }
+
+  /**
+   * ComboBox handler for the settings panel. Activates / Deactivates components
+   * based on compatibility rules.
+   */
+  private class ComboBoxHandler implements ActionListener {
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+      if (e.getSource() == cbxgm) {
+        JComboBox cb = (JComboBox) e.getSource();
+        String gm = (String) cb.getSelectedItem();
+        switch (gm) {
+          case "Singleplayer":
+            cbxplayerN.setEnabled(false);
+            cbxdif2.setEnabled(false);
+            cbxdif3.setEnabled(false);
+            cbxdif4.setEnabled(false);
+            chbP.setEnabled(false);
+            chbNR.setEnabled(false);
+            if (rbDuel.isEnabled()) {
+              rbNrml.setSelected(true);
+            }
+            rbDuel.setEnabled(false);
+            settings.playerN = 0;
+            break;
+          case "Multiplayer":
+            cbxplayerN.setEnabled(true);
+            rbDuel.setEnabled(true);
+            cbxplayerN.setSelectedIndex(0);
+            settings.playerN = 1;
+            break;
+          default:
+            System.out.println("Error at cbxgm");
+            break;
+        }
+      } else if (e.getSource() == cbxplayerN) {
+        JComboBox cb = (JComboBox) e.getSource();
+        String gm = (String) cb.getSelectedItem();
+        switch (gm) {
+          case "2":
+            cbxdif2.setEnabled(true);
+            cbxdif3.setEnabled(false);
+            cbxdif4.setEnabled(false);
+            chbP.setEnabled(true);
+            chbNR.setEnabled(true);
+            rbDuel.setEnabled(true);
+            settings.playerN = 1;
+            break;
+          case "3":
+            cbxdif2.setEnabled(true);
+            cbxdif3.setEnabled(true);
+            cbxdif4.setEnabled(false);
+            chbP.setEnabled(true);
+            chbNR.setEnabled(true);
+            if (rbDuel.isEnabled()) {
+              rbNrml.setSelected(true);
+            }
+            rbDuel.setEnabled(false);
+            settings.playerN = 2;
+            break;
+          case "4":
+            cbxdif2.setEnabled(true);
+            cbxdif3.setEnabled(true);
+            cbxdif4.setEnabled(true);
+            chbP.setEnabled(true);
+            chbNR.setEnabled(true);
+            if (rbDuel.isEnabled()) {
+              rbNrml.setSelected(true);
+            }
+            rbDuel.setEnabled(false);
+            settings.playerN = 3;
+            break;
+          default:
+            System.out.println("Error at cbxplayerN");
+            break;
+        }
+      } else if (e.getSource() == cbxdif2) {
+        JComboBox cb = (JComboBox) e.getSource();
+        String dift2 = (String) cb.getSelectedItem();
+        switch (dift2) {
+          case "Easy":
+            settings.dif2 = 0;
+            break;
+          case "Normal":
+            settings.dif2 = 1;
+            break;
+          case "Hard":
+            settings.dif2 = 2;
+            break;
+          default:
+            System.out.println("Error at dif2");
+            break;
+        }
+      } else if (e.getSource() == cbxdif3) {
+        JComboBox cb = (JComboBox) e.getSource();
+        String dift3 = (String) cb.getSelectedItem();
+        switch (dift3) {
+          case "Easy":
+            settings.dif3 = 0;
+            break;
+          case "Normal":
+            settings.dif3 = 1;
+            break;
+          case "Hard":
+            settings.dif3 = 2;
+            break;
+          default:
+            System.out.println("Error at dif3");
+            break;
+        }
+      } else if (e.getSource() == cbxdif4) {
+        JComboBox cb = (JComboBox) e.getSource();
+        String dift4 = (String) cb.getSelectedItem();
+        switch (dift4) {
+          case "Easy":
+            settings.dif4 = 0;
+            break;
+          case "Normal":
+            settings.dif4 = 1;
+            break;
+          case "Hard":
+            settings.dif4 = 2;
+            break;
+          default:
+            System.out.println("Error at dif4");
+            break;
+        }
+      }
+    }
+  }
+
+  /**
+   * CheckBox handler for the settings panel.
+   */
+  private class CheckBoxHandler implements ItemListener {
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+      if (e.getItemSelectable() == chbP) {
+        settings.pass = !settings.pass;
+      }
+      else if (e.getItemSelectable() == chbNR) {
+        settings.nr = !settings.nr;
+      }
+      else if (e.getItemSelectable() == chbCOS) {
+        settings.cos = !settings.cos;
+      }
+      else if (e.getItemSelectable() == chbCSP) {
+        settings.csp = !settings.csp;
+      }
+    }
+  }
+
+}

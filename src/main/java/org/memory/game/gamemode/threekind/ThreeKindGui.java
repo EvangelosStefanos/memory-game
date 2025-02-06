@@ -1,18 +1,18 @@
-package org.memory.game.gui;
+package org.memory.game.gamemode.threekind;
 
+import org.memory.game.gamemode.AbstractGameModeGui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import static javax.swing.JOptionPane.DEFAULT_OPTION;
-import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import org.memory.game.gamemode.AbstractGameModeLogic;
+import org.memory.game.gui.Utils;
+import org.memory.game.logic.Card;
 import org.memory.game.logic.Settings;
 
 /**
@@ -20,18 +20,18 @@ import org.memory.game.logic.Settings;
  * 
  * @author Steve
  */
-public class Trio extends MainGame {
+public class ThreeKindGui extends AbstractGameModeGui {
 
-  private LogicTrio logic;
+  private ThreeKindLogic logic;
 
   /**
    * Κατασκευαστης.
    * 
    * @param settings
    */
-  public Trio(Settings settings) {
-    super(settings);
-    this.logic = (LogicTrio) super.logic;
+  public ThreeKindGui(Settings settings, ThreeKindLogic logic) {
+    super(settings, logic);
+    this.logic = (ThreeKindLogic) super.logic;
 
     System.out.println(SwingUtilities.isEventDispatchThread());
     SwingUtilities.invokeLater(new Runnable() {
@@ -53,21 +53,21 @@ public class Trio extends MainGame {
     p3 = new JPanel(gl);
     p.add(p3, BorderLayout.CENTER);
 
-    logic.hm = new HashMap<>();
+    logic.map = new HashMap<>();
     JLabel la[] = new JLabel[36];
     int j = 0;// Array index
     Card ca[] = new Card[36];
-    MainGame.MouseHandler mh = new MainGame.MouseHandler();
+    AbstractGameModeGui.MouseHandler mh = new AbstractGameModeGui.MouseHandler();
 
     // Create cards
     for (int k = 0; k <= 2; k++) {
       for (int i = 0; i <= 11; i++) {
 
-        ca[j] = new Card("images/" + i + ".jpg", i);
-        la[j] = new JLabel(ca[i].getBg());
+        ca[j] = new Card(i, i);
+        la[j] = new JLabel(ca[i].getCardBackImageIcon());
         la[j].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3, true));
         la[j].addMouseListener(mh);
-        logic.hm.put(la[j], ca[j]);
+        logic.map.put(la[j], ca[j]);
         j++;
       }
     }
@@ -86,7 +86,7 @@ public class Trio extends MainGame {
       p3.add(la[i]);
     }
     f.pack();
-    update(f);
+    Utils.update(f);
   }
 
 }

@@ -1,39 +1,43 @@
-package org.memory.game.gui;
+package org.memory.game.gamemode.duel;
 
+import org.memory.game.gamemode.AbstractGameModeGui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
+import org.memory.game.gui.IntroGui;
 import static javax.swing.JOptionPane.DEFAULT_OPTION;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import org.memory.game.gamemode.AbstractGameModeLogic;
+import org.memory.game.gui.Utils;
 import org.memory.game.logic.Settings;
-import org.memory.game.logic.LogicDuel;
 import org.memory.game.logic.Card;
 
 /**
- * A game mode where each player has his own deck of cards and
- * the turn order changes drastically. Now each player gets only one move.
- * After that the next player's turn begins. Cards are matched across decks.
+ * The graphical user interface for the Duel game mode. Each player has his own
+ * deck of cards in a separate tab. Uses the Duel game mode logic.
  * 
  * @author EvanStefan
  */
-public class Duel extends MainGame {
+public class DuelGui extends AbstractGameModeGui {
 
-  private LogicDuel logic;
   private JTabbedPane tp;
 
   /**
-   * Create the Duel game mode
+   * Create the DuelLogic game mode
    * 
    * @param settings - The settings that the user selected
    */
-  public Duel(Settings settings) {
-    super(settings);
-    this.logic = (LogicDuel) super.logic;
+  public DuelGui(Settings settings, DuelLogic logic) {
+    super(settings, logic);
 
     JPanel p4 = createPlayerPanel();
     JPanel p5 = createAiPanel();
     tp = createCards(p4, p5);
+  }
+  
+  private DuelLogic getLogic(){
+    return (DuelLogic) super.logic;
   }
 
   /**
@@ -54,10 +58,10 @@ public class Duel extends MainGame {
     for (int k = 0; k <= 1; k++) {
       for (int i = 0; i <= 11; i++) {
         ca[j] = new Card(i, i);
-        la[j] = new JLabel(ca[i].getCardBack());
+        la[j] = new JLabel(ca[i].getCardBackImageIcon());
         la[j].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3, true));
         la[j].addMouseListener(mh);
-        logic.hmp.put(la[j], ca[j]);
+        this.getLogic().hmp.put(la[j], ca[j]);
         j++;
       }
     }
@@ -96,10 +100,10 @@ public class Duel extends MainGame {
     for (int k = 0; k <= 1; k++) {
       for (int i = 0; i <= 11; i++) {
         ca[j] = new Card(i, i);
-        la[j] = new JLabel(ca[i].getCardBack());
+        la[j] = new JLabel(ca[i].getCardBackImageIcon());
         la[j].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3, true));
         la[j].addMouseListener(mh);
-        logic.hmo.put(la[j], ca[j]);
+        this.getLogic().hmo.put(la[j], ca[j]);
         j++;
       }
     }
@@ -140,7 +144,7 @@ public class Duel extends MainGame {
 
     f.pack();
     f.setLocationRelativeTo(null);
-    update(f);
+    Utils.update(f);
 
     return tp;
   }
@@ -176,13 +180,13 @@ public class Duel extends MainGame {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        if (logic.hmp.isEmpty() || logic.hmo.isEmpty()) {
+        if (getLogic().hmp.isEmpty() || getLogic().hmo.isEmpty()) {
 
           updateScores(k);
           JOptionPane.showOptionDialog(f, "Game Over. You scored :\n" + logic.scores[0] + " points.\n "
               + "Player 2 scored : " + logic.scores[1] + " points.",
               "Party Time", DEFAULT_OPTION, INFORMATION_MESSAGE, null, null, null);
-          IntroSettings is = new IntroSettings();
+          new IntroGui();
           f.setVisible(false);
           f.dispose();
         }
@@ -216,7 +220,7 @@ public class Duel extends MainGame {
           public void run() {
 
             input = false;
-            logic.openSesami(0, l);
+            getLogic().openSesami(0, l);
             logic.saveAll();
             if (logic.openLabels.size() == 2) {
               tp.setSelectedIndex(1);

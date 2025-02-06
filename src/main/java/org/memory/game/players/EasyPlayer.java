@@ -3,6 +3,7 @@ package org.memory.game.players;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JLabel;
+import org.memory.game.logic.Card;
 
 /**
  * Αντιπροσωπεύει τον παικτη με μνημη χρυσοψαρου.
