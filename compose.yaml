@@ -1,0 +1,5 @@
+# Docker Compose version v2.29.7
+services:
+  memory-game:
+    image: memory-game
+    build: .
